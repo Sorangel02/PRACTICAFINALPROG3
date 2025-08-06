@@ -1,27 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SistemaEmpleados.Models;
-
-public partial class Empleado
+namespace SistemaEmpleados.Models
 {
-    public int EmpleadoId { get; set; }
+    public partial class Empleado
+    {
+        public int EmpleadoId { get; set; }
 
-    public string Nombre { get; set; } = null!;
+        [Required(ErrorMessage = "El nombre es obligatorio")]
+        [StringLength(100)]
+        public string Nombre { get; set; } = null!;
 
-    public int DepartamentoId { get; set; }
+        [Required(ErrorMessage = "Debe seleccionar un departamento")]
+        public int DepartamentoId { get; set; }
 
-    public int CargoId { get; set; }
+        [Required(ErrorMessage = "Debe seleccionar un cargo")]
+        public int CargoId { get; set; }
 
-    public DateOnly FechaInicio { get; set; }
+        [Required(ErrorMessage = "Debe ingresar la fecha de inicio")]
+        [DataType(DataType.Date)]
+        public DateTime FechaInicio { get; set; }
 
-    public decimal Salario { get; set; }
+        [Required(ErrorMessage = "Debe ingresar el salario")]
+        [Range(0.01, 1000000, ErrorMessage = "El salario debe ser mayor que 0")]
+        public decimal Salario { get; set; }
 
-    public bool Estado { get; set; }
+        public bool Estado { get; set; }
 
-    public virtual Cargo Cargo { get; set; } = null!;
+        // Relaciones
+        public virtual Cargo? Cargo { get; set; }
+        public virtual Departamento? Departamento { get; set; }
 
-    public virtual Departamento Departamento { get; set; } = null!;
-
-    public virtual ICollection<VacacionesDisponible> VacacionesDisponibles { get; set; } = new List<VacacionesDisponible>();
+        public virtual ICollection<VacacionesDisponible> VacacionesDisponibles { get; set; } = new List<VacacionesDisponible>();
+    }
 }

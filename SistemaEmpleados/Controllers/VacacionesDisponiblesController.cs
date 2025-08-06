@@ -56,7 +56,7 @@ namespace SistemaEmpleados.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VacacionesId,EmpleadoId,Anio,DiasAsignados,DiasTomados,DiasRestantes")] VacacionesDisponible vacacionesDisponible)
+        public async Task<IActionResult> Create([Bind("VacacionesId,EmpleadoId,Anio,Dias Asignados,Dias Tomados,Dias Restantes")] VacacionesDisponible vacacionesDisponible)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace SistemaEmpleados.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VacacionesId,EmpleadoId,Anio,DiasAsignados,DiasTomados,DiasRestantes")] VacacionesDisponible vacacionesDisponible)
+        public async Task<IActionResult> Edit(int id, [Bind("VacacionesId,EmpleadoId,Anio,Dias Asignados,Dias Tomados,Dias Restantes")] VacacionesDisponible vacacionesDisponible)
         {
             if (id != vacacionesDisponible.VacacionesId)
             {

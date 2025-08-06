@@ -1,65 +1,53 @@
 ﻿@model IEnumerable<SistemaEmpleados.Models.Empleado>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listado de Empleados";
 }
 
-<h1>Index</h1>
+<h1>Listado de Empleados</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Registrar nuevo empleado</a>
 </p>
-<table class="table">
+
+<table class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaInicio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Salario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cargo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Departamento)
-            </th>
-            <th></th>
+            <th>Nombre</th>
+            <th>Fecha de Inicio</th>
+            <th>Salario</th>
+            <th>Estado</th>
+            <th>Departamento</th>
+            <th>Cargo</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaInicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cargo.CargoId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Departamento.DepartamentoId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EmpleadoId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EmpleadoId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EmpleadoId">Delete</a>
-            </td>
-        </tr>
-}
+@using System.Globalization
+
+    <tbody>
+        @foreach (var empleado in Model)
+        {
+            <tr>
+                <td>@empleado.Nombre</td>
+                <td>@empleado.FechaInicio.ToShortDateString()</td>
+                <td>@empleado.Salario.ToString("C", CultureInfo.CreateSpecificCulture("es-DO"))</td>
+                <td>@(empleado.Estado ? "Activo" : "Inactivo")</td>
+                <td>@empleado.Departamento?.Nombre</td>
+                <td>@empleado.Cargo?.Nombre</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@empleado.EmpleadoId" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Details" asp-route-id="@empleado.EmpleadoId" class="btn btn-sm btn-info">Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@empleado.EmpleadoId" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
-</table>
