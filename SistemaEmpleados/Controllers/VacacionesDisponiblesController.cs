@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -47,24 +46,57 @@ namespace SistemaEmpleados.Controllers
         // GET: VacacionesDisponibles/Create
         public IActionResult Create()
         {
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "EmpleadoId");
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre");
             return View();
         }
 
         // POST: VacacionesDisponibles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VacacionesId,EmpleadoId,Anio,Dias Asignados,Dias Tomados,Dias Restantes")] VacacionesDisponible vacacionesDisponible)
+        public async Task<IActionResult> Create([Bind("EmpleadoId")] VacacionesDisponible vacacionesDisponible)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vacacionesDisponible);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var empleado = await _context.Empleados.FindAsync(vacacionesDisponible.EmpleadoId);
+
+                if (empleado == null)
+                {
+                    ModelState.AddModelError("EmpleadoId", "El empleado seleccionado no es válido.");
+                    ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", vacacionesDisponible.EmpleadoId);
+                    return View(vacacionesDisponible);
+                }
+
+                ModelState.Clear();
+
+                TimeSpan tiempoEnEmpresa = DateTime.Now - empleado.FechaInicio;
+                int aniosDeServicio = (int)Math.Floor(tiempoEnEmpresa.TotalDays / 365.25);
+
+                int diasAsignados = 0;
+                if (aniosDeServicio >= 1 && aniosDeServicio < 5)
+                {
+                    diasAsignados = 14;
+                }
+                else if (aniosDeServicio >= 5)
+                {
+                    diasAsignados = 16;
+                }
+
+                vacacionesDisponible.Anio = DateTime.Now.Year;
+                vacacionesDisponible.DiasAsignados = diasAsignados;
+                vacacionesDisponible.DiasTomados = 0;
+                vacacionesDisponible.DiasRestantes = diasAsignados;
+
+                if (TryValidateModel(vacacionesDisponible))
+                {
+                    _context.Add(vacacionesDisponible);
+                    await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "✅ Vacaciones registradas correctamente.";
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "EmpleadoId", vacacionesDisponible.EmpleadoId);
+
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", vacacionesDisponible.EmpleadoId);
             return View(vacacionesDisponible);
         }
 
@@ -81,16 +113,14 @@ namespace SistemaEmpleados.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "EmpleadoId", vacacionesDisponible.EmpleadoId);
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", vacacionesDisponible.EmpleadoId);
             return View(vacacionesDisponible);
         }
 
         // POST: VacacionesDisponibles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VacacionesId,EmpleadoId,Anio,Dias Asignados,Dias Tomados,Dias Restantes")] VacacionesDisponible vacacionesDisponible)
+        public async Task<IActionResult> Edit(int id, [Bind("VacacionesId,EmpleadoId,Anio,DiasAsignados,DiasTomados,DiasRestantes")] VacacionesDisponible vacacionesDisponible)
         {
             if (id != vacacionesDisponible.VacacionesId)
             {
@@ -117,7 +147,7 @@ namespace SistemaEmpleados.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "EmpleadoId", vacacionesDisponible.EmpleadoId);
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", vacacionesDisponible.EmpleadoId);
             return View(vacacionesDisponible);
         }
 
@@ -153,6 +183,32 @@ namespace SistemaEmpleados.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: VacacionesDisponibles/GetEmpleadoDetails/{id}
+        [HttpGet]
+        public async Task<IActionResult> GetEmpleadoDetails(int id)
+        {
+            var empleado = await _context.Empleados.FindAsync(id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+
+            TimeSpan tiempoEnEmpresa = DateTime.Now - empleado.FechaInicio;
+            int aniosDeServicio = (int)Math.Floor(tiempoEnEmpresa.TotalDays / 365.25);
+
+            int diasAsignados = 0;
+            if (aniosDeServicio >= 1 && aniosDeServicio < 5)
+            {
+                diasAsignados = 14;
+            }
+            else if (aniosDeServicio >= 5)
+            {
+                diasAsignados = 16;
+            }
+
+            return Json(new { fechaInicio = empleado.FechaInicio.ToShortDateString(), aniosDeServicio = aniosDeServicio, diasAsignados = diasAsignados });
         }
 
         private bool VacacionesDisponibleExists(int id)

@@ -1,10 +1,10 @@
 ﻿@model SistemaEmpleados.Models.Departamento
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Departamento";
 }
 
-<h1>Edit</h1>
+<h1>Editar Departamento</h1>
 
 <h4>Departamento</h4>
 <hr />
@@ -18,17 +18,20 @@
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+

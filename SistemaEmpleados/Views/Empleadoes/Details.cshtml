@@ -1,54 +1,88 @@
 ﻿@model SistemaEmpleados.Models.Empleado
+@using System.Globalization
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles";
 }
 
-<h1>Details</h1>
+<h1>Detalles</h1>
 
 <div>
     <h4>Empleado</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Nombre)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Nombre)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Salario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Salario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Cargo)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cargo.CargoId)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cargo.Nombre)
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Departamento)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Departamento.DepartamentoId)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Departamento.Nombre)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Salario)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Salario)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Estado ? "Activo" : "Inactivo")
+        </dd>
+
+        <dt class="col-sm-2">
+            Tiempo en la empresa
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TiempoEnEmpresa)
+        </dd>
+
+        <dt class="col-sm-2">
+            AFP
+        </dt>
+        <dd class="col-sm-10">
+            @Model.AFP.ToString("C", CultureInfo.CreateSpecificCulture("es-DO"))
+        </dd>
+
+        <dt class="col-sm-2">
+            ARS
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ARS.ToString("C", CultureInfo.CreateSpecificCulture("es-DO"))
+        </dd>
+
+        <dt class="col-sm-2">
+            ISR
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ISR.ToString("C", CultureInfo.CreateSpecificCulture("es-DO"))
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.EmpleadoId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.EmpleadoId">Editar</a> |
+    <a asp-action="Index">Volver a la lista</a>
 </div>

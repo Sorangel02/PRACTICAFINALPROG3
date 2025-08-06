@@ -72,7 +72,10 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.VacacionesId).HasName("PK__Vacacion__DC3149A01E32B20C");
 
-            entity.Property(e => e.VacacionesId).HasColumnName("VacacionesID");
+            entity.Property(e => e.VacacionesId)
+                .ValueGeneratedOnAdd() 
+                .HasColumnName("VacacionesID");
+
             entity.Property(e => e.DiasRestantes).HasComputedColumnSql("([DiasAsignados]-[DiasTomados])", true);
             entity.Property(e => e.EmpleadoId).HasColumnName("EmpleadoID");
 

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaEmpleados.Models;
+using System.Text; // Necesario para StringBuilder
+using System.Globalization; // Necesario para el formato de cultura en los cálculos
+
 
 namespace SistemaEmpleados.Controllers
 {
@@ -53,14 +56,12 @@ namespace SistemaEmpleados.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Empleado empleado)
         {
-            // Verificar si ya existe un Empleado con el mismo ID
             bool idExiste = await _context.Empleados.AnyAsync(e => e.EmpleadoId == empleado.EmpleadoId);
 
             if (idExiste)
             {
                 ModelState.AddModelError("EmpleadoId", "Ya existe un empleado con ese código. Por favor, ingrese otro.");
 
-                // Recargar listas desplegables
                 ViewData["CargoId"] = new SelectList(_context.Cargos, "CargoId", "Nombre", empleado.CargoId);
                 ViewData["DepartamentoId"] = new SelectList(_context.Departamentos, "DepartamentoId", "Nombre", empleado.DepartamentoId);
 
@@ -76,15 +77,11 @@ namespace SistemaEmpleados.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Si la validación del modelo falla (otros campos), recarga las listas
             ViewData["CargoId"] = new SelectList(_context.Cargos, "CargoId", "Nombre", empleado.CargoId);
             ViewData["DepartamentoId"] = new SelectList(_context.Departamentos, "DepartamentoId", "Nombre", empleado.DepartamentoId);
 
             return View(empleado);
         }
-
-
-
 
         // GET: Empleadoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -157,5 +154,46 @@ namespace SistemaEmpleados.Controllers
         {
             return _context.Empleados.Any(e => e.EmpleadoId == id);
         }
+
+        // NUEVA ACCIÓN: Exportar a CSV
+        public async Task<IActionResult> ExportarEmpleadosACsv()
+        {
+            var empleados = await _context.Empleados
+                .Include(e => e.Departamento)
+                .Include(e => e.Cargo)
+                .ToListAsync();
+
+            var sb = new StringBuilder();
+
+            // Usa el punto y coma como delimitador
+            string delimitador = ";";
+
+            // Encabezados del CSV usando el nuevo delimitador
+            sb.AppendLine($"ID{delimitador}Nombre{delimitador}Departamento{delimitador}Cargo{delimitador}FechaInicio{delimitador}Salario{delimitador}Estado{delimitador}TiempoEnEmpresa{delimitador}AFP{delimitador}ARS{delimitador}ISR");
+
+            // Datos de los empleados
+            foreach (var empleado in empleados)
+            {
+                // Usa un CultureInfo que siempre use el punto como separador decimal
+                var culturaInvariante = CultureInfo.InvariantCulture;
+
+                var linea = $"{empleado.EmpleadoId}{delimitador}" +
+                            $"{empleado.Nombre.Replace(";", "")}{delimitador}" +
+                            $"{empleado.Departamento.Nombre.Replace(";", "")}{delimitador}" +
+                            $"{empleado.Cargo.Nombre.Replace(";", "")}{delimitador}" +
+                            $"{empleado.FechaInicio.ToShortDateString()}{delimitador}" +
+                            $"{empleado.Salario.ToString(culturaInvariante)}{delimitador}" +
+                            $"{empleado.Estado}{delimitador}" +
+                            $"{empleado.TiempoEnEmpresa.Replace(";", "")}{delimitador}" +
+                            $"{empleado.AFP.ToString(culturaInvariante)}{delimitador}" +
+                            $"{empleado.ARS.ToString(culturaInvariante)}{delimitador}" +
+                            $"{empleado.ISR.ToString(culturaInvariante)}";
+
+                sb.AppendLine(linea);
+            }
+
+            return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", "Empleados.csv");
+        }
     }
 }
+

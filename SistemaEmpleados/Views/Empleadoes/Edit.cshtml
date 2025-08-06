@@ -1,10 +1,11 @@
 ﻿@model SistemaEmpleados.Models.Empleado
+@using System.Globalization
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Empleado";
 }
 
-<h1>Edit</h1>
+<h1>Editar Empleado</h1>
 
 <h4>Empleado</h4>
 <hr />
@@ -43,17 +44,39 @@
                     <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
                 </label>
             </div>
+
+            <hr />
+            <h5>Cálculos del empleado (solo lectura)</h5>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label class="control-label">Tiempo en la empresa</label>
+                <input class="form-control" value="@Model.TiempoEnEmpresa" readonly />
+            </div>
+            <div class="form-group">
+                <label class="control-label">AFP</label>
+                <input class="form-control" value="@Model.AFP.ToString("C", CultureInfo.CreateSpecificCulture("es-DO"))" readonly />
+            </div>
+            <div class="form-group">
+                <label class="control-label">ARS</label>
+                <input class="form-control" value="@Model.ARS.ToString("C", CultureInfo.CreateSpecificCulture("es-DO"))" readonly />
+            </div>
+            <div class="form-group">
+                <label class="control-label">ISR</label>
+                <input class="form-control" value="@Model.ISR.ToString("C", CultureInfo.CreateSpecificCulture("es-DO"))" readonly />
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver a la lista</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
