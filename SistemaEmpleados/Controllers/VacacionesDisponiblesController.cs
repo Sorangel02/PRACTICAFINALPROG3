@@ -86,14 +86,13 @@ namespace SistemaEmpleados.Controllers
                 vacacionesDisponible.DiasTomados = 0;
                 vacacionesDisponible.DiasRestantes = diasAsignados;
 
-                if (TryValidateModel(vacacionesDisponible))
-                {
+                
                     _context.Add(vacacionesDisponible);
                     await _context.SaveChangesAsync();
 
                     TempData["SuccessMessage"] = "✅ Vacaciones registradas correctamente.";
                     return RedirectToAction(nameof(Index));
-                }
+                
             }
 
             ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", vacacionesDisponible.EmpleadoId);
@@ -127,24 +126,12 @@ namespace SistemaEmpleados.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
+                
                     _context.Update(vacacionesDisponible);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VacacionesDisponibleExists(vacacionesDisponible.VacacionesId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                
                 return RedirectToAction(nameof(Index));
             }
             ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", vacacionesDisponible.EmpleadoId);
