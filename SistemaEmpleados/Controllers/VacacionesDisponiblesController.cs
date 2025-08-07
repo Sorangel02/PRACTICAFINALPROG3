@@ -55,7 +55,7 @@ namespace SistemaEmpleados.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EmpleadoId")] VacacionesDisponible vacacionesDisponible)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var empleado = await _context.Empleados.FindAsync(vacacionesDisponible.EmpleadoId);
 
