@@ -14,7 +14,7 @@
             <div asp-validation-summary="All" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="EmpleadoId" class="control-label"></label>
+                <label asp-for="EmpleadoId" class="control-label">Empleado</label>
                 <input asp-for="EmpleadoId" class="form-control" />
                 <span asp-validation-for="EmpleadoId" class="text-danger"></span>
             </div>
@@ -26,7 +26,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="DepartamentoId" class="control-label"></label>
+                <label asp-for="DepartamentoId" class="control-label">Departamento</label>
                 <select asp-for="DepartamentoId" class="form-control"
                         asp-items="@(ViewData["DepartamentoId"] as SelectList)">
                     <option value="">-- Seleccione Departamento --</option>
@@ -35,7 +35,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="CargoId" class="control-label"></label>
+                <label asp-for="CargoId" class="control-label">Cargo</label>
                 <select asp-for="CargoId" class="form-control"
                         asp-items="@(ViewData["CargoId"] as SelectList)">
                     <option value="">-- Seleccione Cargo --</option>
@@ -44,7 +44,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="FechaInicio" class="control-label"></label>
+                <label asp-for="FechaInicio" class="control-label">Fecha de inico</label>
                 <input asp-for="FechaInicio" type="date" class="form-control" />
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>

@@ -26,7 +26,7 @@ namespace SistemaEmpleados.Models
 
         public bool Estado { get; set; }
 
-        // Propiedades calculadas (no se guardan en la base de datos)
+       
         public string TiempoEnEmpresa
         {
             get

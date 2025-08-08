@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SistemaEmpleados.Models;
-using System.Text; // Necesario para StringBuilder
-using System.Globalization; // Necesario para el formato de cultura en los cálculos
+using System.Text;
+using System.Globalization; 
 
 
 namespace SistemaEmpleados.Controllers
@@ -155,7 +155,7 @@ namespace SistemaEmpleados.Controllers
             return _context.Empleados.Any(e => e.EmpleadoId == id);
         }
 
-        // NUEVA ACCIÓN: Exportar a CSV
+        // Exportar a CSV
         public async Task<IActionResult> ExportarEmpleadosACsv()
         {
             var empleados = await _context.Empleados
@@ -165,16 +165,16 @@ namespace SistemaEmpleados.Controllers
 
             var sb = new StringBuilder();
 
-            // Usa el punto y coma como delimitador
+           
             string delimitador = ";";
 
-            // Encabezados del CSV usando el nuevo delimitador
+          
             sb.AppendLine($"ID{delimitador}Nombre{delimitador}Departamento{delimitador}Cargo{delimitador}FechaInicio{delimitador}Salario{delimitador}Estado{delimitador}TiempoEnEmpresa{delimitador}AFP{delimitador}ARS{delimitador}ISR");
 
             // Datos de los empleados
             foreach (var empleado in empleados)
             {
-                // Usa un CultureInfo que siempre use el punto como separador decimal
+                
                 var culturaInvariante = CultureInfo.InvariantCulture;
 
                 var linea = $"{empleado.EmpleadoId}{delimitador}" +
