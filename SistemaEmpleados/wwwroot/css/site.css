@@ -23,7 +23,7 @@ body {
 
 
 :root {
-    --bs-primary: #002D62; /* Azul Marino para botones y enlaces principales */
+    --bs-primary: #002D62; /* Azul Marino para botones y */
     --bs-secondary: #36454F; /* Gris Carbón para elementos secundarios */
     --bs-body-bg: #F5F5DC; /* Blanco Roto para el fondo de la página */
     --bs-body-color: #36454F; /* Gris Carbón para el texto principal */
